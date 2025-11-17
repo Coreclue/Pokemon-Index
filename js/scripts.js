@@ -32,7 +32,15 @@ let pokemonRepository = (function () {
   // Create and add a list item (button) for each pokemon
   function addListItem(pokemon) {
     let ulpokelist = document.querySelector("ul");
+
+    //Assign Bootstrap list-group class to ul
+    ulpokelist.classList.add("list-group"); 
+
     let listItem = document.createElement("li");
+    // Add Bootstrap list-group-item class to li
+    listItem.classList.add("list-group-item");
+
+
     let button = document.createElement("button");
 
     // Set button text and class. Capitalize first letter of name
