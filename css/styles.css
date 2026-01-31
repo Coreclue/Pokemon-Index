@@ -82,7 +82,7 @@ label {
 
 @media (min-width: 400px) {
   .pokemon-list {
-    /*width: 100%;*/
+    width: 100%;
     height: auto;
     background-color: navy;
   }
