@@ -38,12 +38,15 @@ let pokemonRepository = (function () {
 
     let listItem = document.createElement("li");
     // Add Bootstrap list-group-item class to li
-    listItem.classList.add("list-group-item");
+    listItem.classList.add("list-group-item-action");
 
 
     let button = document.createElement("button");
 
-    // Set button text and class. Capitalize first letter of name
+    // Add Bootstrap btn and btn-primary classes to button
+    button.classList.add("btn", "btn-primary");
+
+    // Set text and class. Capitalize first letter of name
     button.innerText =
       pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
     button.classList.add("button");
@@ -142,7 +145,7 @@ let formValidation = (function () {
   }
 
   function validateEmail() {
-    let value = emailInput.value;
+    let value = emailInput.value; 
 
     if (!value) {
       showErrorMessage(emailInput, "Email is a required field.");
