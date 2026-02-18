@@ -21,25 +21,34 @@ let pokemonRepository = (function () {
   function showDetails(pokemon) {
     loadDetails(pokemon).then(function () {
       // Show modal with name, height, and image
-      ModalValidation.showModal(
-        pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1),
-        "Height: " + pokemon.height + "m",
-        pokemon.imageUrl
-      );
+      showModal(pokemon);
     });
+  }
+
+  function showModal(pokemon) {
+    let titleElement = document.querySelector('#exampleModalLabel');
+    titleElement.innerText = pokemon.name;
+
+    let imageElement = document.createElement('img');
+    imageElement.src = pokemon.imageUrl;
+
+    let heightElement = document.createElement('p');
+    heightElement.innerText = `Height: ${pokemon.height}`;
+
+    let typesElement = document.createElement('p');
+    typesElement.innerText = `Types: ${pokemon.types.map(({type}) => type.name).join(', ')}`;
+
+    let bodyElement = document.querySelector('.modal-body');
+    bodyElement.innerHTML = '';
+    bodyElement.appendChild(imageElement);
+    bodyElement.appendChild(heightElement);
+    bodyElement.appendChild(typesElement);
   }
 
   // Create and add a list item (button) for each pokemon
   function addListItem(pokemon) {
-    let ulpokelist = document.querySelector("ul");
-
-    //Assign Bootstrap list-group class to ul
-    ulpokelist.classList.add("list-group"); 
-
-    let listItem = document.createElement("li");
-    // Add Bootstrap list-group-item class to li
-    listItem.classList.add("list-group-item-action");
-
+    let listItem = document.createElement('li');
+    listItem.classList.add('list-group-item');
 
     let button = document.createElement("button");
 
@@ -49,16 +58,19 @@ let pokemonRepository = (function () {
     // Set text and class. Capitalize first letter of name
     button.innerText =
       pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
-    button.classList.add("button");
+    button.setAttribute('data-toggle', 'modal');
+    button.setAttribute('data-target', '#exampleModal');
 
     // Append button to list item, and list item to ul
     listItem.appendChild(button);
-    ulpokelist.appendChild(listItem);
 
     // Add event listener to show details modal on click
     button.addEventListener("click", function () {
       showDetails(pokemon);
     });
+
+    let list = document.querySelector('.pokemon-list');
+    list.appendChild(listItem);
   }
 
   // Load the list of pokemon from the API
@@ -91,6 +103,7 @@ let pokemonRepository = (function () {
       .then(function (details) {
         item.imageUrl = details.sprites.front_default;
         item.height = details.height;
+        item.types = details.types;
       })
       .catch(function (error) {
         console.log(error);
@@ -205,129 +218,129 @@ let formValidation = (function () {
   // THE RETURN STATEMENT HERE
 })();
 
-// ===============================
-// Form Validation Module (IIFE)
-// ===============================
-  let ModalValidation = (function () {
-  // Show a modal with title, text, and optional image
-  function showModal(title, text, imageUrl) {
-    let modalContainer = document.querySelector("#modal-container");
-    modalContainer.innerText = "";
+// // ===============================
+// // Form Validation Module (IIFE)
+// // ===============================
+//   let ModalValidation = (function () {
+//   // Show a modal with title, text, and optional image
+//   function showModal(title, text, imageUrl) {
+//     let modalContainer = document.querySelector("#modal-container");
+//     modalContainer.innerText = "";
 
-    let modal = document.createElement("div");
-    modal.classList.add("modal");
+//     let modal = document.createElement("div");
+//     modal.classList.add("modal");
 
-    let closeButtonElement = document.createElement("button");
-    closeButtonElement.classList.add("modal-close");
-    closeButtonElement.innerText = "close";
-    closeButtonElement.addEventListener("click", hideModal);
+//     let closeButtonElement = document.createElement("button");
+//     closeButtonElement.classList.add("modal-close");
+//     closeButtonElement.innerText = "close";
+//     closeButtonElement.addEventListener("click", hideModal);
 
-    let titleElement = document.createElement("h1");
-    titleElement.innerText = title;
+//     let titleElement = document.createElement("h1");
+//     titleElement.innerText = title;
 
-    let contentElement = document.createElement("p");
-    contentElement.innerText = text;
+//     let contentElement = document.createElement("p");
+//     contentElement.innerText = text;
 
-    modal.appendChild(closeButtonElement);
-    modal.appendChild(titleElement);
+//     modal.appendChild(closeButtonElement);
+//     modal.appendChild(titleElement);
 
-    // Only add image if imageUrl is provided
-    if (imageUrl) {
-      let imageElement = document.createElement("img");
-      imageElement.src = imageUrl;
-      imageElement.alt = title;
-      modal.appendChild(imageElement);
-    }
+//     // Only add image if imageUrl is provided
+//     if (imageUrl) {
+//       let imageElement = document.createElement("img");
+//       imageElement.src = imageUrl;
+//       imageElement.alt = title;
+//       modal.appendChild(imageElement);
+//     }
 
-    modal.appendChild(contentElement);
-    modalContainer.appendChild(modal);
+//     modal.appendChild(contentElement);
+//     modalContainer.appendChild(modal);
 
-    modalContainer.classList.add("is-visible");
+//     modalContainer.classList.add("is-visible");
 
-    // Hide modal when clicking outside of it
-    modalContainer.addEventListener("click", (e) => {
-      let target = e.target;
-      if (target === modalContainer) {
-        hideModal();
-      }
-    });
-  }
+//     // Hide modal when clicking outside of it
+//     modalContainer.addEventListener("click", (e) => {
+//       let target = e.target;
+//       if (target === modalContainer) {
+//         hideModal();
+//       }
+//     });
+//   }
 
-  // Show a sample modal when clicking the button
-  document.querySelector("#show-modal").addEventListener("click", () => {
-    showModal("modal title", "This is the modal content!", null);
-  });
+//   // Show a sample modal when clicking the button
+//   document.querySelector("#show-modal").addEventListener("click", () => {
+//     showModal("modal title", "This is the modal content!", null);
+//   });
 
-  let dialogPromiseReject;
+//   let dialogPromiseReject;
 
-  // Hide the modal
-  function hideModal() {
-    let modalContainer = document.querySelector("#modal-container");
-    modalContainer.classList.remove("is-visible");
+//   // Hide the modal
+//   function hideModal() {
+//     let modalContainer = document.querySelector("#modal-container");
+//     modalContainer.classList.remove("is-visible");
 
-    if (dialogPromiseReject) {
-      dialogPromiseReject();
-      dialogPromiseReject = null;
-    }
-  }
+//     if (dialogPromiseReject) {
+//       dialogPromiseReject();
+//       dialogPromiseReject = null;
+//     }
+//   }
 
-  // Show a dialog with confirm/cancel buttons
-  function showDialog(title, text) {
-    showModal(title, text);
+//   // Show a dialog with confirm/cancel buttons
+//   function showDialog(title, text) {
+//     showModal(title, text);
 
-    let modalContainer = document.querySelector("#modal-container");
-    let modal = document.querySelector(".modal");
+//     let modalContainer = document.querySelector("#modal-container");
+//     let modal = document.querySelector(".modal");
 
-    let confirmButton = document.createElement("button");
-    confirmButton.classList.add("modal-confirm");
-    confirmButton.innerText = "confirm";
+//     let confirmButton = document.createElement("button");
+//     confirmButton.classList.add("modal-confirm");
+//     confirmButton.innerText = "confirm";
 
-    let cancelButton = document.createElement("button");
-    cancelButton.classList.add("modal-cancel");
-    cancelButton.innerText = "cancel";
+//     let cancelButton = document.createElement("button");
+//     cancelButton.classList.add("modal-cancel");
+//     cancelButton.innerText = "cancel";
 
-    modal.appendChild(confirmButton);
-    modal.appendChild(cancelButton);
-    modalContainer.appendChild(modal);
+//     modal.appendChild(confirmButton);
+//     modal.appendChild(cancelButton);
+//     modalContainer.appendChild(modal);
 
-    confirmButton.focus();
+//     confirmButton.focus();
 
-    return new Promise((resolve, reject) => {
-      cancelButton.addEventListener("click", hideModal);
-      confirmButton.addEventListener("click", () => {
-        dialogPromiseReject = null;
+//     return new Promise((resolve, reject) => {
+//       cancelButton.addEventListener("click", hideModal);
+//       confirmButton.addEventListener("click", () => {
+//         dialogPromiseReject = null;
 
-        hideModal();
-        resolve();
-      });
-      dialogPromiseReject = resolve;
-    });
-  }
+//         hideModal();
+//         resolve();
+//       });
+//       dialogPromiseReject = resolve;
+//     });
+//   }
 
-  // Show dialog when clicking the button
-  document.querySelector("#show-dialog").addEventListener("click", () => {
-    showDialog("confirm action", "Are you sure you want to do this?").then(
-      function () {
-        alert("confirmed!");
-      },
-      () => {
-        alert("not confirmed");
-      }
-    );
-  });
+//   // Show dialog when clicking the button
+//   document.querySelector("#show-dialog").addEventListener("click", () => {
+//     showDialog("confirm action", "Are you sure you want to do this?").then(
+//       function () {
+//         alert("confirmed!");
+//       },
+//       () => {
+//         alert("not confirmed");
+//       }
+//     );
+//   });
 
-  // Hide modal on Escape key
-  window.addEventListener("keydown", (e) => {
-    let modalContainer = document.querySelector("#modal-container");
-    if (e.key === "Escape" && modalContainer.classList.contains("is-visible")) {
-      hideModal();
-    }
-  });
+//   // Hide modal on Escape key
+//   window.addEventListener("keydown", (e) => {
+//     let modalContainer = document.querySelector("#modal-container");
+//     if (e.key === "Escape" && modalContainer.classList.contains("is-visible")) {
+//       hideModal();
+//     }
+//   });
 
-  // Expose public functions
-  return {
-    showModal: showModal,
-    hideModal: hideModal,
-    showDialog: showDialog,
-  };
-})();
+//   // Expose public functions
+//   return {
+//     showModal: showModal,
+//     hideModal: hideModal,
+//     showDialog: showDialog,
+//   };
+// })();
